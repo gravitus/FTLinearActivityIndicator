@@ -56,16 +56,17 @@ extension UIApplication {
 		
 		if visible {
 			if indicatorWindow == nil {
-				indicatorWindow = UIWindow(frame: statusBarFrame)
-				indicatorWindow?.windowLevel = UIWindow.Level.statusBar + 1
-				
-				let indicator = FTLinearActivityIndicator(frame: CGRect(x: indicatorWindow!.frame.width - 74, y: 6, width: 44, height: 4))
-				indicator.hidesWhenStopped = false
-				indicator.startAnimating()
-				indicatorWindow?.addSubview(indicator)
+                let frame = CGRect(x: UIApplication.shared.statusBarFrame.width - 74, y: 6, width: 44, height: 4)
+                indicatorWindow = UIWindow(frame: frame)
+                indicatorWindow?.windowLevel = UIWindow.Level.statusBar + 1
+                let vc = FTLinearActivityIndicatorViewController()
+                indicatorWindow?.rootViewController = vc
 			}
 		}
-		guard let indicator = indicatorWindow?.subviews.first as? FTLinearActivityIndicator else {return}
+        guard
+            let vc = indicatorWindow?.rootViewController as? FTLinearActivityIndicatorViewController,
+            let indicator = vc.indicator
+        else { return }
 		indicator.tintColor = statusBarStyle == .default ? UIColor.black : UIColor.white
 		if visible {
 			indicatorWindow?.isHidden = self.isStatusBarHidden
